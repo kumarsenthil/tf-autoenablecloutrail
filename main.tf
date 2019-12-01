@@ -12,7 +12,7 @@ data "archive_file" "lambda_zip" {
 
 # Create the function
 resource "aws_lambda_function" "cloudtrail_lambda" {
-  count = "${var.autoenable_cloudtrail ? 1 : 0}"
+  #count = "${var.autoenable_cloudtrail ? 1 : 0}"
   filename         = "lambda_function.zip"
   function_name    = "cloudtrail_lambda"
   role             = "${aws_iam_role.iam_for_lambda_tf.arn}"
@@ -23,7 +23,7 @@ resource "aws_lambda_function" "cloudtrail_lambda" {
 
 # Necessary permissions to create/run the function 
 resource "aws_iam_role" "iam_for_lambda_tf" {
-  count = "${var.autoenable_cloudtrail ? 1 : 0}"
+  #count = "${var.autoenable_cloudtrail ? 1 : 0}"
   name = "iam_for_lambda_tf"
 
   assume_role_policy = <<EOF
