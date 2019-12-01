@@ -89,7 +89,7 @@ resource "aws_cloudwatch_event_rule" "enable_cloudtrail_rule" {
       "cloudtrail.amazonaws.com"
     ],
     "eventName": [
-      "stopLogging"
+      "StopLogging"
     ]
   }
 }
