@@ -6,7 +6,7 @@ provider "aws" {
 # Archive the code or project that we want to run
 data "archive_file" "lambda_zip" {
     type          = "zip"
-    source_file   = "${path.module}/index.js"
+    source_file   = "${path.module}/index.py"
     output_path   = "${path.module}/lambda_function.zip"
 }
 
@@ -16,9 +16,9 @@ resource "aws_lambda_function" "cloudtrail_lambda" {
   filename         = "${path.module}/lambda_function.zip"
   function_name    = "cloudtrail_lambda"
   role             = "${aws_iam_role.iam_for_lambda_tf.arn}"
-  handler          = "index.handler"
+  handler          = "index.lambda_handler"
   source_code_hash = "${data.archive_file.lambda_zip.output_base64sha256}"
-  runtime          = "nodejs8.10"
+  runtime          = "python3.8"
 }
 
 # Necessary permissions to create/run the function 
@@ -54,14 +54,20 @@ resource "aws_iam_policy" "lambda_logging" {
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Action": [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents",
-        "cloudtrail:*"
-      ],
-      "Resource": "arn:aws:logs:*:*:*",
-      "Effect": "Allow"
+        "Action": [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents"
+        ],
+        "Resource": "arn:aws:logs:*:*:*",
+        "Effect": "Allow"
+    },
+    {
+        "Action": [
+            "cloudtrail:*"
+        ],
+        "Resource": "*",
+        "Effect": "Allow"
     }
   ]
 }
