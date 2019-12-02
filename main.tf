@@ -80,6 +80,7 @@ resource "aws_iam_role_policy_attachment" "lambda_logs" {
   policy_arn = "${aws_iam_policy.lambda_logging.arn}"
 }
 
+#Creating a cloudwatch rule to invoke lamba function
 resource "aws_cloudwatch_event_rule" "enable_cloudtrail_rule" {
     name = "enable_cloudtrail_rule"
     description = "Enable cloudtrail if it is disabled"
@@ -103,12 +104,14 @@ resource "aws_cloudwatch_event_rule" "enable_cloudtrail_rule" {
 PATTERN
 }
 
+#Creating a target for cloudwatch rule
 resource "aws_cloudwatch_event_target" "enable_cloudtrail_target" {
     rule = "${aws_cloudwatch_event_rule.enable_cloudtrail_rule.name}"
     target_id = "${aws_lambda_function.cloudtrail_lambda.function_name}"
     arn = "${aws_lambda_function.cloudtrail_lambda.arn}"
 }
 
+#Allowing Cloudwatch to call the lambda
 resource "aws_lambda_permission" "allow_cloudwatch_to_call_lambda" {
     statement_id = "AllowExecutionFromCloudWatch"
     action = "lambda:InvokeFunction"
